@@ -57,18 +57,22 @@
       "favorites": 140
     },
     {
-      "id": "30fc",
       "name": "paris",
       "description": "aaaa",
-      "difficulty": "facil",
-      "favorites": "10"
+      "difficulty": "moderada",
+      "favorites": "10",
+      "id": "30fc"
     },
     {
-      "id": "dfc4",
-      "name": "cuba",
-      "description": "habana",
-      "difficulty": "dificil",
-      "favorites": "1"
+      "favorites": "11",
+      "id": "dfc4"
+    },
+    {
+      "id": "509f",
+      "name": "japon",
+      "description": "tokio",
+      "difficulty": "fácil",
+      "favorites": "10"
     }
   ]
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Picker } from 'react-native';
 
 const AddEditDestination = ({ route, navigation }) => {
   const [name, setName] = useState('');
@@ -79,12 +79,16 @@ const AddEditDestination = ({ route, navigation }) => {
         value={description}
         onChangeText={setDescription}
       />
-      <TextInput
+      <Picker
+        selectedValue={difficulty}
         style={styles.input}
-        placeholder="Dificultad"
-        value={difficulty}
-        onChangeText={setDifficulty}
-      />
+        onValueChange={(itemValue) => setDifficulty(itemValue)}
+      >
+        <Picker.Item label="Selecciona la dificultad" value="" />
+        <Picker.Item label="Fácil" value="fácil" />
+        <Picker.Item label="Moderada" value="moderada" />
+        <Picker.Item label="Difícil" value="difícil" />
+      </Picker>
       <TextInput
         style={styles.input}
         placeholder="Favoritos"
