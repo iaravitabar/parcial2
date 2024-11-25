@@ -1,8 +1,7 @@
 import React from 'react';
-import {View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 
-
-const DetailsScreen = ({ route }) => {
+const DetailsScreen = ({ route, navigation }) => {
     const { destination } = route.params;
 
     return(
@@ -10,6 +9,7 @@ const DetailsScreen = ({ route }) => {
             <Text style={styles.title}>{destination.name}</Text>
             <Text style={styles.description}>{destination.description}</Text>
             <Text style={[styles.tag, styles[destination.difficulty.toLowerCase()]]}>{destination.difficulty}</Text>
+            <Button title="Editar" onPress={() => navigation.navigate('AddEditDestination', { destination })} />
         </View>
     );
 };

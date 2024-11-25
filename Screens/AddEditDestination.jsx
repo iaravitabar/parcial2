@@ -1,11 +1,25 @@
-import React, { useState } from 'react';
-import { View,Text,TextInput,TouchableOpacity,StyleSheet,Alert,} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
-const AddEditDestination = ({ navigation }) => {
+const AddEditDestination = ({ route, navigation }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [difficulty, setDifficulty] = useState('');
   const [favorites, setFavorites] = useState('');
+  const [isEdit, setIsEdit] = useState(false);
+  const [destinationId, setDestinationId] = useState(null);
+
+  useEffect(() => {
+    if (route.params?.destination) {
+      const { destination } = route.params;
+      setName(destination.name);
+      setDescription(destination.description);
+      setDifficulty(destination.difficulty);
+      setFavorites(destination.favorites);
+      setIsEdit(true);
+      setDestinationId(destination.id);
+    }
+  }, [route.params]);
 
   const handleAddEditDestination = async () => {
     if (!name || !description || !difficulty || !favorites) {
@@ -16,34 +30,42 @@ const AddEditDestination = ({ navigation }) => {
     const newDestination = {
       name,
       description,
-      Difficulty: difficulty,
-    favorites,
+      difficulty,
+      favorites,
     };
 
     try {
-      const response = await fetch('http://localhost:8000/destinations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newDestination),
-      });
+      const response = isEdit
+        ? await fetch(`http://localhost:8000/destinations/${destinationId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newDestination),
+          })
+        : await fetch('http://localhost:8000/destinations', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newDestination),
+          });
 
       if (response.ok) {
-        Alert.alert('Éxito', '¡destino agregado exitosamente!');
+        Alert.alert('Éxito', `¡Destino ${isEdit ? 'editado' : 'agregado'} exitosamente!`);
         navigation.goBack();
       } else {
-        Alert.alert('Error', 'Hubo un problema al agregar el destino.');
+        Alert.alert('Error', `Hubo un problema al ${isEdit ? 'editar' : 'agregar'} el destino.`);
       }
     } catch (error) {
-      console.error('Error al agregar el destino:', error);
+      console.error(`Error al ${isEdit ? 'editar' : 'agregar'} el destino:`, error);
       Alert.alert('Error', 'No se pudo conectar con el servidor.');
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Nuevo Destino</Text>
+      <Text style={styles.title}>{isEdit ? 'Editar Destino' : 'Nuevo Destino'}</Text>
 
       <TextInput
         style={styles.input}
@@ -70,9 +92,8 @@ const AddEditDestination = ({ navigation }) => {
         onChangeText={setFavorites}
       />
 
-
       <TouchableOpacity style={styles.button} onPress={handleAddEditDestination}>
-        <Text style={styles.buttonText}>Agregar Destination</Text>
+        <Text style={styles.buttonText}>{isEdit ? 'Guardar Cambios' : 'Agregar Destino'}</Text>
       </TouchableOpacity>
     </View>
   );

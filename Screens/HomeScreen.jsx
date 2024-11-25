@@ -4,11 +4,11 @@ import axios from 'axios';
 
 const HomeScreen = ({ navigation }) => {
     const [destinations, setDestinations] = useState([]);
-  
+
     useEffect(() => {
         fetchDestinations();
     }, []);
-    
+
     const fetchDestinations = async () => {
         try {
             const response = await axios.get('http://localhost:8000/destinations');
@@ -27,10 +27,15 @@ const HomeScreen = ({ navigation }) => {
         }
     };
 
-    const toggleFavorite = async (id, isFavorite) => {
+    const toggleFavorite = async (id, favorites) => {
         try {
-            await axios.put(`http://localhost:8000/destinations/${id}`, { favorite: !isFavorite });
-            fetchDestinations();
+            const updatedFavorites = favorites + 1;
+            await axios.put(`http://localhost:8000/destinations/${id}`, { favorites: updatedFavorites });
+            setDestinations(prevDestinations =>
+                prevDestinations.map(destination =>
+                    destination.id === id ? { ...destination, favorites: updatedFavorites } : destination
+                )
+            );
         } catch (error) {
             console.error(error);
         }
@@ -52,8 +57,9 @@ const HomeScreen = ({ navigation }) => {
                 >
                     {item.difficulty}
                 </Text>
-                <Button title={item.favorite ? "Desmarcar" : "Marcar"} onPress={() => toggleFavorite(item.id, item.favorite)} />
+                <Button title={`Favoritos (${item.favorites})`} onPress={() => toggleFavorite(item.id, item.favorites)} />
                 <Button title="Eliminar" onPress={() => handleDelete(item.id)} />
+                <Button title="Editar" onPress={() => navigation.navigate('AddEditDestination', { destination: item })} />
             </View>
         </TouchableOpacity>
     );
